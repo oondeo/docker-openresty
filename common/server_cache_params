@@ -1,0 +1,6 @@
+# Setup var defaults on begin server block
+set $no_cache "";
+# If non GET/HEAD, don't cache & mark user as uncacheable for 1 second via cookie
+if ($request_method !~ ^(GET|HEAD)$) {
+    set $no_cache "1";
+}
