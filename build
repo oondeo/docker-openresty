@@ -17,7 +17,7 @@ apk add --no-cache --virtual .build-deps \
     zlib-dev \
     pcre-dev \
     gnupg \
-    openssl-dev \
+    libressl-dev \
     unzip
 
 export NAXSI_VERSION=$(curl -s https://api.github.com/repos/nbs-system/naxsi/releases/latest | grep 'tag_name' | cut -d\" -f 4)
