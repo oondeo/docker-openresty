@@ -28,7 +28,7 @@ export _RESTY_CONFIG_DEPS=""
 
 export RESTY_CONFIG_OPTIONS=" --add-module=/tmp/naxsi-$NAXSI_VERSION/naxsi_src  $RESTY_CONFIG_OPTIONS "
 
-mkdir -p /usr/src
+mkdir -p /usr/src /etc/nginx/naxsi
 cd /tmp
 curl -fSL https://github.com/nbs-system/naxsi/archive/$NAXSI_VERSION.tar.gz -o naxsi-$NAXSI_VERSION.tar.gz \
 && tar xzf naxsi-${NAXSI_VERSION}.tar.gz \
