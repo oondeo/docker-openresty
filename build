@@ -46,9 +46,9 @@ curl -fSL https://github.com/nbs-system/naxsi/archive/$NAXSI_VERSION.tar.gz -o n
 && mkdir -p /usr/lib/nginx \
 && ln -sf /usr/local/openresty/nginx/modules /usr/lib/nginx/modules \
 && ln -s ../../usr/local/openresty/nginx/modules /etc/nginx/modules \
-&& cd /tmp && cp -a /tmp/naxsi-$NAXSI_VERSION/naxsi_config /etc/nginx/naxsi \
+&& cd /tmp && cp -a /tmp/naxsi-$NAXSI_VERSION/naxsi_config/* /etc/nginx/naxsi/ \
 && curl -fSL https://github.com/nbs-system/naxsi-rules/archive/master.zip -o naxsi-rules.zip \
-&& unzip naxsi-rules.zip && mv naxsi-rules-master/*.rules /etc/nginx/naxsi/ \
+&& unzip naxsi-rules.zip && mv naxsi-rules-master /etc/nginx/naxsi/rules \
 && strip /usr/local/openresty/nginx/sbin/nginx* \
 && strip /usr/lib/nginx/modules/*.so \
 && cd /tmp && rm -rf * \

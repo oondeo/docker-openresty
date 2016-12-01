@@ -32,13 +32,13 @@ ENV RESTY_CONFIG_OPTIONS="\
     --with-http_sub_module \
     --with-http_v2_module \
     --with-http_xslt_module=dynamic \
-    --with-mail \
-    --with-mail_ssl_module \
     --with-md5-asm \
     --with-pcre-jit \
     --with-sha1-asm \
     --with-stream \
     --with-stream_ssl_module \
+    --with-mail=dynamic \
+    --with-mail_ssl_module \
     --with-threads "
 #    --with-ipv6 \
 #    --with-stream_ssl_preread_module \
@@ -48,7 +48,8 @@ ENV RESTY_CONFIG_OPTIONS="\
 #--prefix=/etc/nginx \
 #--sbin-path=/usr/sbin/nginx \
 #--modules-path=/usr/lib/nginx/modules \
-#--conf-path=/etc/nginx/nginx.conf 
+#--conf-path=/etc/nginx/nginx.conf
+
 
 COPY build /usr/local/bin/
 
