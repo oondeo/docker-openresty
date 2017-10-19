@@ -53,8 +53,27 @@ ENV RESTY_CONFIG_OPTIONS="\
 
 COPY build /usr/local/bin/
 
-RUN /usr/local/bin/build
+RUN apk add --no-cache bash && /usr/local/bin/build
 
 COPY common/* /etc/nginx/
+COPY scripts/* /usr/local/bin/
 
-CMD ["nginx", "-g", "daemon off;"]
+ENV HOME=/opt/app-root/src/
+RUN mkdir -p $HOME /opt/app-root/etc \
+    && mv /etc/nginx /opt/app-root/etc/nginx \
+    && ln -s /opt/app-root/etc/nginx /etc/nginx
+
+VOLUME [ "/opt/app-root/etc/nginx" ]
+
+CMD [ "run" ]
+
+EXPOSE 8080 8081
+
+# Reset permissions of modified directories and add default user
+RUN mkdir -p ${HOME} \
+    && adduser -u 1001 -S -G root -h ${HOME} -s /sbin/nologin default \
+    && chown -R 1001:0 /opt/app-root \
+    && mkdir -p ${HOME}/.pki/nssdb \
+    && chown -R 1001:0 ${HOME}/.pki 
+
+USER 1001  

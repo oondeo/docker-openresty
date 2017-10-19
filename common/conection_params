@@ -1,6 +1,6 @@
 # send the client a "request timed out" if the body is not loaded by this time. Default 60.
 client_body_timeout 10;
-client_max_body_size 4M;
+client_max_body_size 64M;
 client_body_buffer_size     4M;
 
 # If the client stops reading data, free up the stale client connection after this much time. Default 60.
