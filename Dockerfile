@@ -58,12 +58,15 @@ RUN apk add --no-cache bash && /usr/local/bin/build
 COPY common/* /etc/nginx/
 COPY scripts/* /usr/local/bin/
 
-ENV HOME=/opt/app-root/src/
+ENV HOME=/opt/app-root/src \
+    PATH=/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/bin:$PATH
 RUN mkdir -p $HOME /opt/app-root/etc \
     && mv /etc/nginx /opt/app-root/etc/nginx \
     && ln -s /opt/app-root/etc/nginx /etc/nginx
 
-VOLUME [ "/opt/app-root/etc/nginx" ]
+VOLUME [ "/opt/app-root/etc/nginx" , $HOME ]
+
+WORKDIR $HOME
 
 CMD [ "run" ]
 

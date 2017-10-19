@@ -3,6 +3,7 @@
 DOMAIN_PROD=${DOMAIN_PROD:-nginx.dev.oondeo.es}
 DOMAIN_DEV=${DOMAIN_DEV:-nginx.dev.oondeo.es}
 
+sed -i "s/{{HOME}}/$HOME/g" /etc/nginx/conf.d/default.conf
 sed -i "s/{{DOMAIN_PROD}}/$DOMAIN_PROD/g" /etc/nginx/conf.d/default.conf
 sed -i "s/{{DOMAIN_DEV}}/$DOMAIN_DEV/g" /etc/nginx/conf.d/default.conf
 
