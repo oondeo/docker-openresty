@@ -20,9 +20,10 @@ RUN ln /usr/sbin/nologin /sbin/nologin && rm -rf /etc/nginx \
     && rm -rf /var/cache/nginx && mkdir -p /var/cache && ln -sf /tmp /var/cache/nginx \
   	&& ln -sf /dev/stdout /var/log/nginx/access.log \
   	&& ln -sf /dev/stderr /var/log/nginx/error.log \
-    && ln -sf /tmp/client_proxy_temp /usr/local/openresty/nginx/client_proxy_temp \
+    && ln -sf /tmp/client_body_temp /usr/local/openresty/nginx/client_body_temp \
     && ln -sf /tmp/proxy_temp /usr/local/openresty/nginx/proxy_temp \
     && ln -sf /tmp/fastcgi_temp /usr/local/openresty/nginx/fastcgi_temp \
+    && ln -sf /tmp/scgi_temp /usr/local/openresty/nginx/scgi_temp \    
     && ln -sf /tmp/uwsgi_temp  /usr/local/openresty/nginx/uwsgi_temp    
 
 WORKDIR $HOME
