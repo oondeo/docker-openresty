@@ -6,13 +6,13 @@ ENV RESTY_CONFIG_OPTIONS="\
 --http-log-path=/var/log/nginx/access.log \
 --pid-path=/var/run/nginx.pid \
 --lock-path=/var/run/nginx.lock \
---http-client-body-temp-path=/var/cache/nginx/client_temp \
---http-proxy-temp-path=/var/cache/nginx/proxy_temp \
---http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
---http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
+--http-client-body-temp-path=/tmp/client_temp \
+--http-proxy-temp-path=/tmp/proxy_temp \
+--http-fastcgi-temp-path=/tmp/fastcgi_temp \
+--http-uwsgi-temp-path=/tmp/uwsgi_temp \
 --without-http_scgi_module \
 --user=nginx \
---group=nginx \
+--group=root \
     --with-file-aio \
     --with-http_addition_module \
     --with-http_auth_request_module \
@@ -78,6 +78,7 @@ EXPOSE 8080 8081
 
 # Reset permissions of modified directories and add default user
 RUN mkdir -p ${HOME} \
+    && chmod 777 /run \
     && adduser -u 1001 -S -G root -h ${HOME} -s /sbin/nologin default \
     && chown -R 1001:0 /opt/app-root \
     && mkdir -p ${HOME}/.pki/nssdb \
