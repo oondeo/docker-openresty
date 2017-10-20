@@ -53,19 +53,22 @@ ENV RESTY_CONFIG_OPTIONS="\
 
 COPY build /usr/local/bin/
 
-RUN apk add --no-cache bash && /usr/local/bin/build
-
-COPY common/* /etc/nginx/
-COPY scripts/* /usr/local/bin/
+RUN /usr/local/bin/build
 
 ENV HOME=/opt/app-root/src \
     PATH=/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/bin:$PATH \
     NGINX_CACHE=0
-RUN mkdir -p $HOME /opt/app-root/etc \
-    && mv /etc/nginx /opt/app-root/etc/nginx \
-    && ln -s /opt/app-root/etc/nginx /etc/nginx
+RUN mkdir -p $HOME /opt/app-root/etc 
 
-VOLUME [ "/opt/app-root/etc/nginx" , $HOME ]
+COPY common/ /opt/app-root/etc/nginx
+COPY scripts/ /usr/local/bin/
+
+RUN rm -rf /etc/nginx \
+    && ln -s /opt/app-root/etc/nginx /etc/nginx \
+    && rm /etc/nginx/modules \
+    && ln -s /usr/local/openresty/nginx/modules /etc/nginx/modules
+
+VOLUME [ "/opt/app-root/etc/nginx/conf.d" , $HOME ]
 
 WORKDIR $HOME
 
