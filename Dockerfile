@@ -19,7 +19,11 @@ RUN ln /usr/sbin/nologin /sbin/nologin && rm -rf /etc/nginx \
     && ln -sf /var/run/nginx.lock /usr/local/openresty/nginx/logs/nginx.lock \
     && rm -rf /var/cache/nginx && mkdir -p /var/cache && ln -sf /tmp /var/cache/nginx \
   	&& ln -sf /dev/stdout /var/log/nginx/access.log \
-  	&& ln -sf /dev/stderr /var/log/nginx/error.log    
+  	&& ln -sf /dev/stderr /var/log/nginx/error.log \
+    && ln -sf /tmp/client_proxy_temp /usr/local/openresty/nginx/client_proxy_temp \
+    && ln -sf /tmp/proxy_temp /usr/local/openresty/nginx/proxy_temp \
+    && ln -sf /tmp/fastcgi_temp /usr/local/openresty/nginx/fastcgi_temp \
+    && ln -sf /tmp/uwsgi_temp  /usr/local/openresty/nginx/uwsgi_temp    
 
 WORKDIR $HOME
 
@@ -32,6 +36,7 @@ RUN mkdir -p ${HOME} \
     && chmod 777 /run /var/run \
     && adduser --system --uid 1001 --gid 0 --home ${HOME} --shell /usr/sbin/nologin default \
     && chown -R 1001:0 /opt/app-root \
+    && chmod -R g+w  /opt/app-root \
     && mkdir -p ${HOME}/.pki/nssdb \
     && chown -R 1001:0 ${HOME}/.pki 
 
