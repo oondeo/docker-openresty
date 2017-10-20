@@ -1,4 +1,4 @@
 #!/bin/dash
 
-exec conf-nginx
-exec nginx -g "daemon off;"
+conf-nginx
+nginx -g "daemon off;"

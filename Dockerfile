@@ -59,7 +59,8 @@ COPY common/* /etc/nginx/
 COPY scripts/* /usr/local/bin/
 
 ENV HOME=/opt/app-root/src \
-    PATH=/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/bin:$PATH
+    PATH=/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/bin:$PATH \
+    NGINX_CACHE=0
 RUN mkdir -p $HOME /opt/app-root/etc \
     && mv /etc/nginx /opt/app-root/etc/nginx \
     && ln -s /opt/app-root/etc/nginx /etc/nginx

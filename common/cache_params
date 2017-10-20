@@ -15,14 +15,18 @@ proxy_cache_path /tmp/proxy-cache levels=1:2 keys_zone=microcache:20m max_size=2
 proxy_cache_path /tmp/proxy-cache2 levels=1:2 keys_zone=microcache2:20m max_size=256m inactive=2h;
 proxy_cache_use_stale updating error timeout invalid_header http_500;
 proxy_cache_lock on;
-proxy_cache_key $scheme$host$request_uri$request_method;
+proxy_cache_key $request_method$scheme$host$request_uri;
 
   # Setup the fastcgi cache.
   fastcgi_cache_path /tmp/cgi-cache levels=1:2 keys_zone=microcache:20m max_size=256m inactive=2h;
   fastcgi_cache_path /tmp/cgi-cache2 levels=1:2 keys_zone=microcache2:20m max_size=256m inactive=2h;
+  # If an error occurs when communicating with FastCGI server, return cached content.
+  # Useful for serving cached content if the PHP process dies or timeouts.
   fastcgi_cache_use_stale updating error timeout invalid_header http_500;
+  
   fastcgi_cache_lock on;
-  fastcgi_cache_key $scheme$host$request_uri$request_method;
+  fastcgi_cache_lock_timeout 6s;
+  fastcgi_cache_key $request_method$scheme$host$request_uri;
 
 
   ## set cache log location, so you can evaluate hits
@@ -36,7 +40,7 @@ proxy_cache_key $scheme$host$request_uri$request_method;
 
   ## mapping cache to request method
   map $request_method $no_cache {
-    default 1; # by default do not cache
-    HEAD 0; # cache HEAD requests
-    GET 0; # cache GET requests
+    default "1"; # by default do not cache
+    HEAD "0"; # cache HEAD requests
+    GET "0"; # cache GET requests
   }
