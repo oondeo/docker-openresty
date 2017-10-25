@@ -11,8 +11,8 @@ open_file_cache_errors on;
 
 
 
-proxy_cache_path /tmp/proxy-cache levels=1:2 keys_zone=microcache:20m max_size=256m inactive=2h;
-proxy_cache_path /tmp/proxy-cache2 levels=1:2 keys_zone=microcache2:20m max_size=256m inactive=2h;
+proxy_cache_path /tmp/proxy-cache levels=1:2 keys_zone=proxycache:20m max_size=256m inactive=2h;
+proxy_cache_path /tmp/proxy-cache2 levels=1:2 keys_zone=proxycache2:20m max_size=256m inactive=2h;
 proxy_cache_use_stale updating error timeout invalid_header http_500;
 proxy_cache_lock on;
 proxy_cache_key $request_method$scheme$host$request_uri;
