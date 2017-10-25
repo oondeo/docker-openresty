@@ -1,3 +1,6 @@
 [submodule "root"]
 	path = root
 	url = https://github.com/oondeo/docker-scripts-root.git
+[submodule "common/naxsi/rules"]
+	path = common/naxsi/rules
+	url = https://github.com/nbs-system/naxsi-rules
