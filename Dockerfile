@@ -78,6 +78,7 @@ RUN mkdir -p ${HOME} \
     && adduser -u 1001 -S -G root -h ${HOME} -s /sbin/nologin default \
     && chown -R 1001:0 /opt/app-root \
     && mkdir -p ${HOME}/.pki/nssdb \
-    && chown -R 1001:0 ${HOME}/.pki 
+    && chown -R 1001:0 ${HOME}/.pki \
+    && chown -R 1001:0 /var/log
 
 USER 1001  
