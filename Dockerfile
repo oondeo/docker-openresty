@@ -1,4 +1,4 @@
-FROM oondeo/alpine
+FROM oondeo/alpine:3.7
 
 
 ENV RESTY_CONFIG_OPTIONS="\

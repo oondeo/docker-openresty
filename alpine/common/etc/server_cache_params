@@ -1,0 +1,14 @@
+
+# Setup var defaults on begin server block
+#set $no_cache "0";
+
+# If non GET/HEAD, don't cache & mark user as uncacheable for 1 second via cookie
+#We have a map doing this
+#if ($request_method !~ ^(GET|HEAD)$) {
+#    set $no_cache "1";
+#}
+
+#Don't cache if the URL contains a query string
+#if ($query_string != ""){
+#    set $no_cache 1;
+#}

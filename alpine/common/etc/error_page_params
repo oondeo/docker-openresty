@@ -1,0 +1,4 @@
+error_page 403 http://www.oondeo.es/?error=403;
+error_page 404 http://www.oondeo.es/?error=404;
+error_page 405 http://www.oondeo.es/?error=405;
+error_page 500 501 502 503 504 http://www.oondeo.es/?error=50x;

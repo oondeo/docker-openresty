@@ -1,0 +1,31 @@
+
+# Drop no cache cookie if need be
+# (for some reason, add_header fails if included in prior if-block)
+if ($no_cache = "1") {
+    add_header Set-Cookie "_mcnc=1; Max-Age=2; Path=/";
+    add_header X-Microcachable "0";
+}
+# Bypass cache if no-cache cookie is set
+if ($http_cookie ~* "_mcnc") {
+            set $no_cache "1";
+}
+
+
+
+add_header X-Fastcgi-Cache $upstream_cache_status;
+# Allow caching of requests which contain the following headers.
+fastcgi_pass_header Set-Cookie;
+fastcgi_pass_header Cookie;
+fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
+
+fastcgi_no_cache $no_cache;
+fastcgi_cache_bypass $no_cache;
+
+fastcgi_cache microcache;
+fastcgi_cache_valid 404 30m;
+fastcgi_cache_valid 200 301 302 20s;
+fastcgi_cache_lock_timeout 6s;
+
+#fastcgi_max_temp_file_size 1M;
+#fastcgi_cache_use_stale updating;
+#fastcgi_ignore_headers Cache-Control Expires;

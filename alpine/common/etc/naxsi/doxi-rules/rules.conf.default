@@ -1,0 +1,21 @@
+#
+# rules.conf for naxi-rules
+# 2014-10-18
+#
+
+
+include /etc/nginx/doxi-rules/naxsi_core.rules;
+
+include /etc/nginx/doxi-rules/web_server.rules;
+include /etc/nginx/doxi-rules/scanner.rules;
+
+
+#include /etc/nginx/doxi-rules/app_server.rules;
+#include /etc/nginx/doxi-rules/web_apps.rules;
+#include /etc/nginx/doxi-rules/malware.rules;
+
+
+# usually an emtpy file, wouldnt get overwritten on rules-updates
+# using spike -X naxi 
+#include /etc/nginx/doxi-rules/local.rules;
+
