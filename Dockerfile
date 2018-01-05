@@ -53,7 +53,7 @@ ENV RESTY_CONFIG_OPTIONS="\
 
 COPY build /usr/local/bin/
 
-RUN apk add --no-cache bash && /usr/local/bin/build
+RUN /usr/local/bin/build
 
 COPY common/* /etc/nginx/
 COPY scripts/* /usr/local/bin/

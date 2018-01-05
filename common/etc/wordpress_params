@@ -1,4 +1,0 @@
-
-include "wordpress/globals/restrictions.conf";
-include "wordpress/globals/move-login.conf";
-include "wordpress/globals/common-locations.conf";
