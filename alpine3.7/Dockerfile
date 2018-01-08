@@ -139,3 +139,4 @@ USER 1001
 EXPOSE 8080 8081
 
 CMD ["/usr/libexec/s2i/bin/run"]
+#https://github.com/masterzen/nginx-upload-progress-module
