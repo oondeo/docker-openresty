@@ -1,0 +1,40 @@
+#!/bin/bash
+
+
+while IFS='=' read -r name value ; do
+  if [[ $name == 'NGINXCONF_'* ]]; then
+    name="${name/NGINXCONF_/}"
+    name="${name,,}"
+    name="${name/__/\.}"
+    for f in $(find /etc/nginx/ -not -path "/etc/nginx/naxsi*")
+    do 
+      if [ "$value" != "" ]
+      then
+        sed -i "/$name .*/$name ${value//\//\\/};/g" $f
+        echo " " >> $f
+      else
+        sed -i "/$name[ =].*/d" $f
+      fi
+    done
+  fi
+done < <(env)
+
+if [ ! -f /etc/nginx/conf.d/default.conf ]
+then 
+  exit 0
+fi
+
+HOME=${HOME:-"/opt/app-root/src"}
+DOMAIN_PROD=${DOMAIN_PROD:-nginx.dev.oondeo.es}
+DOMAIN_DEV=${DOMAIN_DEV:-nginx.dev.oondeo.es}
+NGINX_CACHE=${NGINX_CACHE:-0}
+sed -i "s/{{HOME}}/${HOME//\//\\/}/g" /etc/nginx/conf.d/default.conf
+sed -i "s/{{DOMAIN_PROD}}/$DOMAIN_PROD/g" /etc/nginx/conf.d/default.conf
+sed -i "s/{{DOMAIN_DEV}}/$DOMAIN_DEV/g" /etc/nginx/conf.d/default.conf
+if [ "$NGINX_CACHE" == "1" ] || [ "$NGINX_CACHE" == "true" ] || [ "$NGINX_CACHE" == "TRUE" ]
+then
+  sed -i 's/{{NGINX_CACHE}}//g' /etc/nginx/conf.d/default.conf
+else
+  sed -i 's/{{NGINX_CACHE}}/set \$no_cache "1";/g' /etc/nginx/conf.d/default.conf
+fi
+

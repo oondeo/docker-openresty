@@ -131,11 +131,11 @@ RUN apk add --no-cache --virtual .build-deps \
 ENV PATH=$PATH:/usr/local/openresty/luajit/bin/:/usr/local/openresty/nginx/sbin/:/usr/local/openresty/bin/
 
 # Copy nginx configuration files
-COPY common/etc/ /usr/local/openresty/nginx/conf/
+COPY root/ /
 
 RUN docker-footer
 USER 1001
 
 EXPOSE 8080 8081
 
-CMD ["/usr/local/openresty/bin/openresty", "-g", "daemon off;"]
+CMD ["/usr/libexec/s2i/bin/run"]

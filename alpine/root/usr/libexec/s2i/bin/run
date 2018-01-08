@@ -1,0 +1,27 @@
+#!/bin/dash
+
+#set -o errexit
+#export_vars=$(cgroup-limits) ; export $export_vars
+export DOCUMENTROOT=${DOCUMENTROOT:-/}
+PHP_INI_PATH=${PHP_INI_PATH:-/opt/app-root/etc/php.ini}
+STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
+
+# A simple calculation for MaxRequestWorkers would be: Total Memory / Size Per Apache process.
+# The total memory is determined from the Cgroups and the average size for the
+# Apache process is estimated to 15MB.
+#max_clients_computed=$((MEMORY_LIMIT_IN_BYTES/1024/1024/15))
+# The MaxClients should never be lower than StartServers, which is set to 5.
+# In case the container has memory limit set to <64M we pin the MaxClients to 4.
+#[[ $max_clients_computed -le 4 ]] && max_clients_computed=4
+#export HTTPD_MAX_REQUEST_WORKERS=${HTTPD_MAX_REQUEST_WORKERS:-$max_clients_computed}
+#echo "-> Cgroups memory limit is set, using HTTPD_MAX_REQUEST_WORKERS=${HTTPD_MAX_REQUEST_WORKERS}"
+
+
+# envsubst < /opt/app-root/etc/conf.d/50-mpm-tuning.conf.template > /opt/app-root/etc/conf.d/50-mpm-tuning.conf
+# envsubst < /opt/app-root/etc/conf.d/00-documentroot.conf.template > /opt/app-root/etc/conf.d/00-documentroot.conf
+
+echo "Apply environment variables attributes"
+$STI_SCRIPTS_PATH/conf-php
+$STI_SCRIPTS_PATH/conf-nginx
+echo "Starting server"
+/usr/local/openresty/bin/openresty -g "daemon off;" 

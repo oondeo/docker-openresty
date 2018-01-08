@@ -1,0 +1,73 @@
+#!/bin/bash
+
+export RESTY_VERSION=${RESTY_VERSION:-$(curl -s https://raw.githubusercontent.com/openresty/docker-openresty/master/jessie/Dockerfile | grep "ARG RESTY_VERSION[ =]" | cut -f2 -d\" )}
+export NAXSI_VERSION=${NAXSI_VERSION:-$(curl -s https://api.github.com/repos/nbs-system/naxsi/releases/latest | grep 'tag_name' | cut -d\" -f 4)}
+export RESTY_LUAROCKS_VERSION=${RESTY_LUAROCKS_VERSION:-$(curl -s https://raw.githubusercontent.com/openresty/docker-openresty/master/jessie/Dockerfile | grep "ARG RESTY_LUAROCKS_VERSION[ =]" | cut -d\" -f2 )}
+export RESTY_OPENSSL_VERSION=${RESTY_OPENSSL_VERSION:-$(curl -s https://raw.githubusercontent.com/openresty/docker-openresty/master/jessie/Dockerfile | grep "ARG RESTY_OPENSSL_VERSION[ =]" | cut -f2 -d\" )}
+export RESTY_PCRE_VERSION=${RESTY_PCRE_VERSION:-$(curl -s https://raw.githubusercontent.com/openresty/docker-openresty/master/jessie/Dockerfile | grep "ARG RESTY_PCRE_VERSION[ =]" | cut -f2 -d\" )}
+export RESTY_J=${RESTY_J:-$(curl -s https://raw.githubusercontent.com/openresty/docker-openresty/master/jessie/Dockerfile | grep "ARG RESTY_J[ =]" | cut -f2 -d"\"")}
+# These are not intended to be user-specified
+export  _RESTY_CONFIG_DEPS=${_RESTY_CONFIG_DEPS:-" \
+    --with-openssl=/tmp/openssl-${RESTY_OPENSSL_VERSION} \
+    --with-pcre=/tmp/pcre-${RESTY_PCRE_VERSION} \
+    --add-module=/tmp/naxsi-$NAXSI_VERSION/naxsi_src"}
+
+# 1) Install apt dependencies
+# 2) Download and untar OpenSSL, PCRE, and OpenResty
+# 3) Build OpenResty
+# 4) Cleanup
+echo $RESTY_VERSION $NAXSI_VERSION $RESTY_LUAROCKS_VERSION $RESTY_OPENSSL_VERSION $RESTY_PCRE_VERSION
+DEBIAN_FRONTEND=noninteractive apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        curl \
+        gettext-base \
+        libgd-dev \
+        libgeoip-dev \
+        libncurses5-dev \
+        libperl-dev \
+        libreadline-dev \
+        libxslt1-dev \
+        make \
+        perl \
+        unzip \
+        zlib1g-dev \
+    && cd /tmp \
+    && curl -fSL https://github.com/nbs-system/naxsi/archive/${NAXSI_VERSION}.tar.gz -o naxsi-${NAXSI_VERSION}.tar.gz \
+    && tar xzf naxsi-${NAXSI_VERSION}.tar.gz \
+    && curl -fSL https://www.openssl.org/source/openssl-${RESTY_OPENSSL_VERSION}.tar.gz -o openssl-${RESTY_OPENSSL_VERSION}.tar.gz \
+    && tar xzf openssl-${RESTY_OPENSSL_VERSION}.tar.gz \
+    && curl -fSL https://ftp.pcre.org/pub/pcre/pcre-${RESTY_PCRE_VERSION}.tar.gz -o pcre-${RESTY_PCRE_VERSION}.tar.gz \
+    && tar xzf pcre-${RESTY_PCRE_VERSION}.tar.gz \
+    && curl -fSL https://openresty.org/download/openresty-${RESTY_VERSION}.tar.gz -o openresty-${RESTY_VERSION}.tar.gz \
+    && tar xzf openresty-${RESTY_VERSION}.tar.gz \
+    && cd /tmp/openresty-${RESTY_VERSION} \
+    && ./configure -j${RESTY_J} ${_RESTY_CONFIG_DEPS} ${RESTY_CONFIG_OPTIONS} ${RESTY_CONFIG_OPTIONS_MORE} \
+    && make -j${RESTY_J} \
+    && make -j${RESTY_J} install \
+    && cd /tmp \
+    && cp -a /tmp/naxsi-$NAXSI_VERSION/naxsi_config/ /usr/local/openresty/nginx/conf/naxsi \
+    && rm -rf \
+        naxsi-${NAXSI_VERSION} naxsi-${NAXSI_VERSION}.tar.gz \
+        openssl-${RESTY_OPENSSL_VERSION} \
+        openssl-${RESTY_OPENSSL_VERSION}.tar.gz \
+        openresty-${RESTY_VERSION}.tar.gz openresty-${RESTY_VERSION} \
+        pcre-${RESTY_PCRE_VERSION}.tar.gz pcre-${RESTY_PCRE_VERSION} \
+    && curl -fSL http://luarocks.org/releases/luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz -o luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \
+    && tar xzf luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \
+    && cd luarocks-${RESTY_LUAROCKS_VERSION} \
+    && ./configure \
+        --prefix=/usr/local/openresty/luajit \
+        --with-lua=/usr/local/openresty/luajit \
+        --lua-suffix=jit-2.1.0-beta3 \
+        --with-lua-include=/usr/local/openresty/luajit/include/luajit-2.1 \
+    && make build \
+    && make install \
+    && cd /tmp \
+    && rm -rf luarocks-${RESTY_LUAROCKS_VERSION} luarocks-${RESTY_LUAROCKS_VERSION}.tar.gz \
+    && DEBIAN_FRONTEND=noninteractive apt-get remove -y build-essential \
+    && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/log/* /usr/share/doc/* /usr/share/man/* /root/.cache \
+    && ln -sf /dev/stdout /usr/local/openresty/nginx/logs/access.log \
+    && ln -sf /dev/stderr /usr/local/openresty/nginx/logs/error.log
