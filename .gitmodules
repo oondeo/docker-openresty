@@ -1,5 +1,5 @@
 [submodule "alpine/root/opt/app-root/etc/naxsi/doxi-rules"]
-	path = alpine/root/opt/app-root/etc/naxsi/doxi-rules/doxi-rules
+	path = alpine/root/opt/app-root/etc/naxsi/doxi-rules
 	url = https://bitbucket.org/lazy_dogtown/doxi-rules.git
 [submodule "alpine/root/opt/app-root/etc/naxsi/naxsi-rules"]
 	path = alpine/root/opt/app-root/etc/naxsi/naxsi-rules
