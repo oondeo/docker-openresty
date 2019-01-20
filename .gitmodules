@@ -1,6 +1,3 @@
-[submodule "alpine/root/opt/app-root/etc/naxsi/doxi-rules"]
-	path = alpine/root/opt/app-root/etc/naxsi/doxi-rules
-	url = https://bitbucket.org/lazy_dogtown/doxi-rules.git
-[submodule "alpine/root/opt/app-root/etc/naxsi/naxsi-rules"]
-	path = alpine/root/opt/app-root/etc/naxsi/naxsi-rules
-	url = https://github.com/nbs-system/naxsi-rules.git
+[submodule "alpine/verynginx"]
+	path = alpine/verynginx
+	url = https://github.com/camilb/VeryNginx.git

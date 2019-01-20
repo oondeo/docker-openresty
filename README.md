@@ -3,7 +3,12 @@ Nginx docker with openresty and naxsi support.
 
 To run it:
 ``` bash
-docker run -e DOMAIN_PROD="mydomain.com" -e DOMAIN_DEV="mydomain.127.0.0.1.xip.io" -p 8081:8081 oondeo/openresty
+docker run -e DOMAIN_PROD="mydomain.com" -e DOMAIN_DEV="mydomain.127.0.0.1.xip.io" -p 8081:8081 -p 8080:8080   oondeo/openresty
+
+http://localhost:8081/verynginx/index.html
+
+user: verynginx
+pass: verynginx
 ```
 
 All request to DOMAIN_DEV are transformed in DOMAIN_PROD.
