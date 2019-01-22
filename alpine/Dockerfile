@@ -1,10 +1,11 @@
 # Dockerfile - alpine
 # https://github.com/openresty/docker-openresty
 
-ARG RESTY_IMAGE_BASE="openresty/openresty"
-ARG RESTY_IMAGE_TAG="alpine"
+#ARG RESTY_IMAGE_BASE="openresty/openresty"
+#ARG RESTY_IMAGE_TAG="alpine"
 
-FROM ${RESTY_IMAGE_BASE}:${RESTY_IMAGE_TAG}
+#FROM ${RESTY_IMAGE_BASE}:${RESTY_IMAGE_TAG}
+FROM openresty/openresty:alpine
 
 ENV SUMMARY="Nginx, resty and naxsi image with standar modules"	\
     DESCRIPTION="The image use scripts and configurations compatible \
