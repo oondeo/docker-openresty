@@ -1,3 +1,6 @@
 [submodule "alpine/verynginx"]
 	path = alpine/verynginx
 	url = https://github.com/camilb/VeryNginx.git
+[submodule "alpine/root"]
+	path = alpine/root
+	url = https://github.com/oondeo/docker-scripts-root.git

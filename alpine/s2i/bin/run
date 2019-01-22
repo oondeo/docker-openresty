@@ -3,9 +3,11 @@
 #set -o errexit
 #export_vars=$(cgroup-limits) ; export $export_vars
 export DOMAIN_PROD=${DOMAIN_PROD:-localhost}
+export DOMAIN_DEV=${DOMAIN_DEV:-localhost}
 export DOCUMENTROOT=${DOCUMENTROOT:-/}
-export HOME=${HOME:-/opt/app-root/src}
+export HOME=${HOME:-/opt/app-root/src/webroot}
 PHP_INI_PATH=${PHP_INI_PATH:-/opt/app-root/etc/php.ini}
+NGINX_CONF_PATH=${NGINX_CONF_PATH:-/opt/app-root/etc/nginx.conf}
 STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i/bin}
 
 
@@ -27,4 +29,4 @@ echo "Apply environment variables attributes"
 #$STI_SCRIPTS_PATH/conf-php
 $STI_SCRIPTS_PATH/conf-nginx
 echo "Starting server"
-/usr/local/openresty/bin/openresty -g "daemon off;" -c /opt/app-root/etc/nginx.conf
+/usr/local/openresty/bin/openresty -g "daemon off;" -c $NGINX_CONF_PATH

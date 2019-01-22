@@ -24,7 +24,7 @@ then
   exit 0
 fi
 
-HOME=${HOME:-"/opt/app-root/src"}
+HOME=${HOME:-"/opt/app-root/src/webroot"}
 DOMAIN_PROD=${DOMAIN_PROD:-nginx.dev.oondeo.es}
 DOMAIN_DEV=${DOMAIN_DEV:-nginx.dev.oondeo.es}
 NGINX_CACHE=${NGINX_CACHE:-0}

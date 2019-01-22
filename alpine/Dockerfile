@@ -22,33 +22,46 @@ LABEL summary="$SUMMARY" \
       release="1" \
       maintainer="OONDEO <info@oondeo.es>"
 
+ENV \
+    # DEPRECATED: Use above LABEL instead, because this will be removed in future versions.
+    STI_SCRIPTS_URL=image:///usr/libexec/s2i \
+    # Path to be used in other layers to place s2i scripts into
+    STI_SCRIPTS_PATH=/usr/libexec/s2i/bin
 
+ENV \
+    # The $HOME is not set by default, but some applications needs this variable
+    HOME=/opt/app-root/src \
+    PATH=/opt/app-root/src/bin:/opt/app-root/bin:$STI_SCRIPTS_PATH:$PATH
+
+
+# When bash is started non-interactively, to run a shell script, for example it
+# looks for this variable and source the content of this file. This will enable
+# the SCL for all scripts without need to do 'scl enable'.
+ENV BASH_ENV=/opt/app-root/etc/scl_enable \
+    ENV=/opt/app-root/etc/scl_enable \
+    XDG_DATA_HOME=$HOME/.local/share \
+    DEBIAN_FRONTEND=noninteractive \
+    LANG=es_ES.UTF-8 LANGUAGE=es_ES.UTF-8 LC_ALL=es_ES.UTF-8 \
+    PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
 
 # Copy nginx configuration files
 COPY root/ /
 COPY verynginx/verynginx /opt/verynginx/verynginx
-
+COPY etc /opt/app-root/etc
+COPY s2i/bin $STI_SCRIPTS_PATH
 RUN rm -rf /etc/nginx && ln -s /opt/app-root/etc /etc/nginx
 
 # Reset permissions of modified directories and add default user
-RUN apk add --no-cache dash bash && ln -s /usr/bin/dash /bin/dash \
-    && useradd -u 1001 -r -g 0 -d ${HOME} -s /sbin/nologin \
-      -c "Default Application User" default  || true \
-    && adduser -u 1001 -s /bin/dash -G root -h ${HOME} default || true \   
-    && chown -R 1001:0 /opt/app-root /opt/verynginx /usr/local/openresty/nginx \
-    && chmod -R g+w /opt/app-root /opt/verynginx /usr/local/openresty/nginx \
-    && chmod ug+s /opt/app-root/* \
-    && mkdir -p ${HOME}/.pki/nssdb \
-    && chown -R 1001:0 ${HOME}/.pki \
-    && chown -R 1001:0 /var/log \
-    && chmod -R 777 /var/log \
-    && chmod 777 /var/run && chmod 775 /run \
-    && chmod ug+s /run /var/run \
-    && chown 1001 /var/run /run 
+RUN apk add --no-cache dash bash tini && ln -s /usr/bin/dash /bin/dash \
+    && /usr/bin/docker-footer \   
+    && chown -R 1001:0 /opt/verynginx /usr/local/openresty/nginx \
+    && chmod -R g+w /opt/verynginx /usr/local/openresty/nginx 
+
 
 USER 1001
 
-EXPOSE 8080 8081 8443
+EXPOSE 8080 8081
 
-CMD ["/usr/libexec/s2i/bin/run"]
+ENTRYPOINT ["/sbin/tini", "-g" ,"--", "/usr/bin/container-entrypoint"]
+CMD [ "$STI_SCRIPTS_PATH/run" ]
 #https://github.com/masterzen/nginx-upload-progress-module
