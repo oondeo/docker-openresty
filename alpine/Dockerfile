@@ -46,7 +46,7 @@ ENV BASH_ENV=/opt/app-root/etc/scl_enable \
     PROMPT_COMMAND=". /opt/app-root/etc/scl_enable"
 
 # Copy nginx configuration files
-COPY root/ /
+COPY root/root /
 COPY verynginx/verynginx /opt/verynginx/verynginx
 COPY etc /opt/app-root/etc
 COPY s2i/bin $STI_SCRIPTS_PATH
