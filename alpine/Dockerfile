@@ -64,5 +64,5 @@ USER 1001
 EXPOSE 8080 8081
 
 ENTRYPOINT ["/sbin/tini", "-g" ,"--", "/usr/bin/container-entrypoint"]
-CMD [ "$STI_SCRIPTS_PATH/run" ]
+CMD [ "run" ]
 #https://github.com/masterzen/nginx-upload-progress-module

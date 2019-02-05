@@ -26,7 +26,6 @@ STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i/bin}
 # envsubst < /opt/app-root/etc/conf.d/00-documentroot.conf.template > /opt/app-root/etc/conf.d/00-documentroot.conf
 
 echo "Apply environment variables attributes"
-#$STI_SCRIPTS_PATH/conf-php
 $STI_SCRIPTS_PATH/conf-nginx
 echo "Starting server"
-/usr/local/openresty/bin/openresty -g "daemon off;" -c $NGINX_CONF_PATH
+exec /usr/local/openresty/bin/openresty -g "daemon off;" -c $NGINX_CONF_PATH
