@@ -1,4 +1,27 @@
-error_page 403 http://www.oondeo.es/?error=403;
-error_page 404 http://www.oondeo.es/?error=404;
-error_page 405 http://www.oondeo.es/?error=405;
-error_page 500 501 502 503 504 http://www.oondeo.es/?error=50x;
+error_page 400 401 402 403 /etc/nginx/error/403.html;
+error_page 404 /etc/nginx/error/404.html;
+error_page 405 /etc/nginx/error/405.html;
+error_page 500 501 502 503 504 /etc/nginx/error/50x.html;
+        location = /error/400.html {
+            internal;
+        }
+        location = /error/401.html {
+
+            internal;
+        }
+        location = /error/403.html {
+
+            internal;
+        }
+        location = /error/404.html {
+
+            internal;
+        }
+        location = /error/405.html {
+
+            internal;
+        }
+        location = /error/50x.html {
+
+            internal;
+        }
