@@ -50,7 +50,8 @@ COPY root/root /
 COPY verynginx/verynginx /opt/verynginx/verynginx
 COPY etc /opt/app-root/etc
 COPY s2i/bin $STI_SCRIPTS_PATH
-RUN rm -rf /etc/nginx && ln -s /opt/app-root/etc /etc/nginx
+RUN rm -rf /etc/nginx && ln -s /opt/app-root/etc /etc/nginx \
+    rm -rf /usr/local/openresty/nginx/conf && ln -s /opt/app-root/etc /usr/local/openresty/nginx/conf
 
 # Reset permissions of modified directories and add default user
 RUN apk add --no-cache dash bash tini && ln -s /usr/bin/dash /bin/dash \
