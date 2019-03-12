@@ -1,7 +1,4 @@
-server {
 
-  listen 8081;
-  server_name _;
   
   access_log /dev/stderr main;
   include /opt/verynginx/verynginx/nginx_conf/in_server_block.conf;
@@ -66,4 +63,3 @@ end
 
   }
 
-}
