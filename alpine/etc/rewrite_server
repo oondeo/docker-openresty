@@ -10,7 +10,8 @@
     proxy_set_header Accept-Encoding "";
     
     proxy_set_header        X-Forwarded-Host  "{{DOMAIN_PROD}}";
-    
+    proxy_set_header        X-Forwarded-Proto https;
+
     proxy_redirect                  http://{{DOMAIN_PROD}}/ /;
     proxy_redirect                  http://{{DOMAIN_PROD}}:8080/ /;
   
