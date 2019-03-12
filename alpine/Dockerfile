@@ -3,6 +3,7 @@
 
 #ARG RESTY_IMAGE_BASE="openresty/openresty"
 #ARG RESTY_IMAGE_TAG="alpine"
+ARG OPENRESTY_VERSION="1.15.8.1"
 
 #FROM ${RESTY_IMAGE_BASE}:${RESTY_IMAGE_TAG}
 FROM openresty/openresty:alpine
@@ -54,7 +55,7 @@ RUN rm -rf /etc/nginx && ln -s /opt/app-root/etc /etc/nginx \
     && rm -rf /usr/local/openresty/nginx/conf && ln -s /opt/app-root/etc /usr/local/openresty/nginx/conf
 
 # Reset permissions of modified directories and add default user
-RUN apk add --no-cache dash bash tini && ln -s /usr/bin/dash /bin/dash \
+RUN apk add --no-cache dash bash tini inotify-tools && ln -s /usr/bin/dash /bin/dash \
     && /usr/bin/docker-footer \   
     && chown -R 1001:0 /opt/verynginx /usr/local/openresty/nginx \
     && chmod -R g+w /opt/verynginx /usr/local/openresty/nginx 
