@@ -1,7 +1,6 @@
 
   
   access_log /dev/stderr main;
-  include /opt/verynginx/verynginx/nginx_conf/in_server_block.conf;
   location / {
 
     proxy_pass http://127.0.0.1:8080;
