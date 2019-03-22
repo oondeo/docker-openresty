@@ -12,8 +12,11 @@
     proxy_set_header        X-Forwarded-Proto https;
 
     proxy_redirect                  https://{{DOMAIN_PROD}}/ /;
+    proxy_redirect                  https://{{DOMAIN_PROD}}:8080/ /;
+    proxy_redirect                  https://{{DOMAIN_PROD}}:8081/ /;    
     proxy_redirect                  http://{{DOMAIN_PROD}}/ /;
     proxy_redirect                  http://{{DOMAIN_PROD}}:8080/ /;
+    proxy_redirect                  http://{{DOMAIN_PROD}}:8081/ /;
   
 
     proxy_cookie_domain             '{{DOMAIN_PROD}}' "$host";
