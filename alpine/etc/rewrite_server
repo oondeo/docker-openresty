@@ -44,21 +44,21 @@ end
 #end  
 #   }
 
-    proxy_pass http://127.0.0.1:$domain_prod_port;
+    set $rewrite_server 127.0.0.1;
+    set $rewrite_server_port 8083;
+    proxy_pass http://$rewrite_server:$rewrite_server_port;
     
     proxy_set_header Host $domain_prod; 
-    proxy_set_header Forwarded  "for=$http_x_forwarded_for;host=$domain_prod;port=443;proto=$http_x_forwarded_proto"; 
+    proxy_set_header Forwarded  "for=$http_x_forwarded_for;host=$domain_prod;port=$http_x_forwarded_port;proto=$http_x_forwarded_proto"; 
     proxy_set_header X-Forwarded-Host  $domain_prod; 
-    proxy_set_header X-Real-IP $http_x_forwarded_host;
-    proxy_set_header Accept-Encoding "";
+    add_header Access-Control-Allow-Origin "*";
 
+    proxy_redirect                  http://$domain_prod/ $http_x_forwarded_proto://$http_x_forwarded_host:$http_x_forwarded_port/;
+    proxy_redirect                  https://$domain_prod/ $http_x_forwarded_proto://$http_x_forwarded_host:$http_x_forwarded_port/; 
+    proxy_redirect                  http://$domain_prod:$rewrite_server_port/ $http_x_forwarded_proto://$http_x_forwarded_host:$http_x_forwarded_port/;
+    proxy_redirect                  https://$domain_prod:$rewrite_server_port/ $http_x_forwarded_proto://$http_x_forwarded_host:$http_x_forwarded_port/;          
+ 
 
-    proxy_redirect                  https://$domain_prod/ /;
-    proxy_redirect                  https://$domain_prod:$domain_prod_port/ /;
-    proxy_redirect                  https://$host:8081/ /;    
-    proxy_redirect                  http://$domain_prod/ /;
-    proxy_redirect                  http://$domain_prod:$domain_prod_port/ /;
-    proxy_redirect                  http://$host:8081/ /;
   
     #rewrite response
     proxy_cookie_domain             "$domain_prod" "$host";
