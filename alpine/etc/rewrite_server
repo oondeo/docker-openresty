@@ -3,41 +3,20 @@
   access_log /dev/stderr main;
   location / {
 
-    proxy_pass http://127.0.0.1:8080;
-    
-    proxy_set_header Host "{{DOMAIN_PROD}}";  
-    proxy_set_header Accept-Encoding "";
-    
-    proxy_set_header        X-Forwarded-Host  "{{DOMAIN_PROD}}";
-    proxy_set_header        X-Forwarded-Proto https;
-
-    proxy_redirect                  https://{{DOMAIN_PROD}}/ /;
-    proxy_redirect                  https://{{DOMAIN_PROD}}:8080/ /;
-    proxy_redirect                  https://{{DOMAIN_PROD}}:8081/ /;    
-    proxy_redirect                  http://{{DOMAIN_PROD}}/ /;
-    proxy_redirect                  http://{{DOMAIN_PROD}}:8080/ /;
-    proxy_redirect                  http://{{DOMAIN_PROD}}:8081/ /;
-  
-
-    proxy_cookie_domain             '{{DOMAIN_PROD}}' "$host";
-      sub_filter_once off;
-            sub_filter_types *;                                                         
-            sub_filter "{{DOMAIN_PROD}}" "$host" ;
-        
-  
    # replace request
+   #header_filter_by_lua
    access_by_lua_block{
 
 if ngx.req.get_method() == "POST" then   
     ngx.req.read_body()
     local data = ngx.req.get_body_data() 
     if data then
-      local newargs, n, err = ngx.re.gsub(data, "$host", "{{DOMAIN_PROD}}") 
+      local newargs, n, err = ngx.re.gsub(data, "$host", "ngx.var.domain_prod") 
       ngx.req.set_body_data(newargs)
     end
     local file = ngx.req.get_body_file()
     if file then                                                                                         
-      local newargs, n, err = ngx.re.gsub(file, "$host", "{{DOMAIN_PROD}}")
+      local newargs, n, err = ngx.re.gsub(file, "$host", "ngx.var.domain_prod")
       ngx.req.set_body_data(newargs)
     end 
 else
@@ -45,7 +24,7 @@ else
   local newargs = {}
   for key, val in pairs(args) do
     if type(val) == "string" then
-      local newval, n , err =  ngx.re.gsub(val, "$host", "{{DOMAIN_PROD}}")
+      local newval, n , err =  ngx.re.gsub(val, "$host", "ngx.var.domain_prod")
       newargs[key]=newval
     else
       newargs[key]=val
@@ -64,6 +43,31 @@ end
 #  ngx.log(ngx.STDERR,ngx.ctx.buffered)
 #end  
 #   }
+
+    proxy_pass http://127.0.0.1:$domain_prod_port;
+    
+    proxy_set_header Host $domain_prod; 
+    proxy_set_header Forwarded  "for=$http_x_forwarded_for;host=$domain_prod;port=443;proto=$http_x_forwarded_proto"; 
+    proxy_set_header X-Forwarded-Host  $domain_prod; 
+    proxy_set_header X-Real-IP $http_x_forwarded_host;
+    proxy_set_header Accept-Encoding "";
+
+
+    proxy_redirect                  https://$domain_prod/ /;
+    proxy_redirect                  https://$domain_prod:$domain_prod_port/ /;
+    proxy_redirect                  https://$host:8081/ /;    
+    proxy_redirect                  http://$domain_prod/ /;
+    proxy_redirect                  http://$domain_prod:$domain_prod_port/ /;
+    proxy_redirect                  http://$host:8081/ /;
+  
+    #rewrite response
+    proxy_cookie_domain             "$domain_prod" "$host";
+    sub_filter_once off;
+    sub_filter_types *;                                                         
+    sub_filter "$domain_prod" "$host" ;
+        
+  
+
 
   }
 
