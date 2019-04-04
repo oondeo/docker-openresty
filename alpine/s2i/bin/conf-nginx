@@ -1,12 +1,18 @@
 #!/bin/bash
-
+NGINX_CONF_PATH=${NGINX_CONF_PATH:-/opt/app-root/etc}
+NGINX_SSL_PATH=${NGINX_SSL_PATH:-$NGINX_CONF_PATH/ssl}
+NGINX_SSL_TEMP_PATH=${NGINX_SSL_TEMP_PATH:-/var/run/nginx_ssl}
+HOME=${HOME:-"/opt/app-root/src/webroot"}
+DOMAIN_PROD=${DOMAIN_PROD:-nginx.dev.oondeo.es}
+DOMAIN_DEV=${DOMAIN_DEV:-nginx.dev.oondeo.es}
+NGINX_CACHE=${NGINX_CACHE:-0}
 
 while IFS='=' read -r name value ; do
   if [[ $name == 'NGINXCONF_'* ]]; then
     name="${name/NGINXCONF_/}"
     name="${name,,}"
     name="${name/__/\.}"
-    for f in $(find /etc/nginx/ -type f -not -path "/etc/nginx/naxsi*" 2> /dev/null)
+    for f in $(find $NGINX_CONF_PATH/ -type f -not -path "$NGINX_CONF_PATH/naxsi*" 2> /dev/null)
     do 
       if [ "$value" != "" ]
       then
@@ -24,11 +30,8 @@ done < <(env)
 #   exit 0
 # fi
 
-HOME=${HOME:-"/opt/app-root/src/webroot"}
-DOMAIN_PROD=${DOMAIN_PROD:-nginx.dev.oondeo.es}
-DOMAIN_DEV=${DOMAIN_DEV:-nginx.dev.oondeo.es}
-NGINX_CACHE=${NGINX_CACHE:-0}
-for filename in $(find /etc/nginx/ -type f -not -path "/etc/nginx/naxsi*" 2> /dev/null); do
+
+for filename in $(find $NGINX_CONF_PATH/ -type f -not -path "$NGINX_CONF_PATH/naxsi*" 2> /dev/null); do
   sed -i "s/{{HOME}}/${HOME//\//\\/}/g" $filename
   sed -i "s/{{DOMAIN_PROD}}/$DOMAIN_PROD/g" $filename
   sed -i "s/{{DOMAIN_DEV}}/$DOMAIN_DEV/g" $filename
@@ -40,3 +43,19 @@ for filename in $(find /etc/nginx/ -type f -not -path "/etc/nginx/naxsi*" 2> /de
   fi
 done
 
+mkdir -p $NGINX_SSL_TEMP_PATH
+for TLS_DIR in `find $NGINX_SSL_PATH/* -type d`
+do
+  CERTNAME=`basename $TLS_DIR`
+  FILENAME="$NGINX_SSL_TEMP_PATH/$CERTNAME/tls.pem"
+  cp -a  $TLS_DIR $NGINX_SSL_TEMP_PATH/
+  if [ -f "$FILENAME" ]
+  then
+    echo "" > $FILENAME
+  fi
+  find $TLS_DIR -type f -name "*.crt" -print0 | sort -z | xargs -0 cat >> $FILENAME
+  #for CRT in `find $TLS_DIR -type f -name "*.crt"`
+  #do
+  #   cat $CRT 
+  #done
+done
