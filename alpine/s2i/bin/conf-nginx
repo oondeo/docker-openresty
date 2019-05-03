@@ -1,12 +1,15 @@
 #!/bin/bash
-NGINX_CONF_PATH=${NGINX_CONF_PATH:-/opt/app-root/etc}
-NGINX_SSL_PATH=${NGINX_SSL_PATH:-$NGINX_CONF_PATH/ssl}
-NGINX_SSL_TEMP_PATH=${NGINX_SSL_TEMP_PATH:-/var/run/nginx_ssl}
+NGINX_NEWCONF_PATH=${NGINX_NEWCONF_PATH:-/opt/app-root/etc}
+NGINX_CONF_PATH=${NGINX_CONF_PATH:-/opt/app-root/var/nginx}
+NGINX_SSL_PATH=${NGINX_SSL_PATH:-$NGINX_NEWCONF_PATH/ssl}
+NGINX_SSL_TEMP_PATH=${NGINX_SSL_TEMP_PATH:-$NGINX_CONF_PATH/ssl}
 HOME=${HOME:-"/opt/app-root/src/webroot"}
 DOMAIN_PROD=${DOMAIN_PROD:-nginx.dev.oondeo.es}
 DOMAIN_DEV=${DOMAIN_DEV:-nginx.dev.oondeo.es}
 NGINX_CACHE=${NGINX_CACHE:-0}
 
+mkdir -p $NGINX_CONF_PATH
+cp -Lr $NGINX_NEWCONF_PATH/* $NGINX_CONF_PATH
 while IFS='=' read -r name value ; do
   if [[ $name == 'NGINXCONF_'* ]]; then
     name="${name/NGINXCONF_/}"
@@ -59,3 +62,9 @@ do
   #   cat $CRT 
   #done
 done
+
+
+if [ "$(id -u)" == "0" ]
+then
+  sed -i  "s/^#user  nginx\;/user nginx;/g" $NGINX_CONF_PATH/nginx.conf
+fi

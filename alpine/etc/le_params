@@ -1,0 +1,8 @@
+        location ^~ /.well-known/acme-challenge/ {
+                        access_log off;
+                        log_not_found off;
+                        root /var/lib/acme/;
+                        autoindex off;
+                        index index.html;
+                        try_files $uri $uri/ =404;
+        }

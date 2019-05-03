@@ -51,7 +51,7 @@ COPY root/root /
 COPY verynginx/verynginx /opt/verynginx/verynginx
 COPY etc /opt/app-root/etc
 COPY s2i/bin $STI_SCRIPTS_PATH
-RUN rm -rf /etc/nginx && ln -s /opt/app-root/etc /etc/nginx \
+RUN mkdir -p /opt/app-root/var/nginx && rm -rf /etc/nginx && ln -s /opt/app-root/var/nginx /etc/nginx \
     && mkdir -p /opt/dashboard && ln -s /opt/verynginx/verynginx/dashboard /opt/dashboard/verynginx \
     && rm -rf /usr/local/openresty/nginx/conf && ln -s /opt/app-root/etc /usr/local/openresty/nginx/conf
 

@@ -44,8 +44,8 @@ end
 #end  
 #   }
 
-    set $rewrite_server 127.0.0.1;
-    set $rewrite_server_port 8083;
+    #set $rewrite_server 127.0.0.1;
+    #set $rewrite_server_port 8083;
     proxy_pass http://$rewrite_server:$rewrite_server_port;
     
     proxy_set_header Host $domain_prod; 
