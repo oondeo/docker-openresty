@@ -46,21 +46,30 @@ for filename in $(find $NGINX_CONF_PATH/ -type f -not -path "$NGINX_CONF_PATH/na
   fi
 done
 
-mkdir -p $NGINX_SSL_TEMP_PATH
+# mkdir -p $NGINX_SSL_TEMP_PATH
 for TLS_DIR in `find $NGINX_SSL_PATH/* -type d`
 do
   CERTNAME=`basename $TLS_DIR`
   FILENAME="$NGINX_SSL_TEMP_PATH/$CERTNAME/tls.pem"
-  cp -a  $TLS_DIR $NGINX_SSL_TEMP_PATH/
-  if [ -f "$FILENAME" ]
+  KEYFILE="$NGINX_SSL_TEMP_PATH/$CERTNAME/tls.key"
+  #cp -a  $TLS_DIR $NGINX_SSL_TEMP_PATH/
+  mkdir -p $NGINX_SSL_TEMP_PATH/$CERTNAME
+  if [ -e "$TLS_DIR/fullchain.pem" ]
   then
-    echo "" > $FILENAME
+    cp $TLS_DIR/fullchain.pem $FILENAME
+    cp $TLS_DIR/privkey.pem $KEYFILE
+  else
+    if [ -f "$FILENAME" ]
+    then
+      echo "" > $FILENAME
+    fi  
+    find $TLS_DIR -type f -name "*.crt" -print0 | sort -z | xargs -0 cat >> $FILENAME
+    cp $TLS_DIR/tls.key $KEYFILE
+    #for CRT in `find $TLS_DIR -type f -name "*.crt"`
+    #do
+    #   cat $CRT 
+    #done
   fi
-  find $TLS_DIR -type f -name "*.crt" -print0 | sort -z | xargs -0 cat >> $FILENAME
-  #for CRT in `find $TLS_DIR -type f -name "*.crt"`
-  #do
-  #   cat $CRT 
-  #done
 done
 
 
