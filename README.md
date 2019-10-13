@@ -3,7 +3,7 @@ Nginx docker with openresty and naxsi support.
 
 To run it:
 ``` bash
-docker run -e DOMAIN_PROD="mydomain.com" -e DOMAIN_DEV="mydomain.127.0.0.1.xip.io" -p 8081:8081 -p 8080:8080   oondeo/openresty
+docker run -e NGINX_CONF_WATCH_PATH="/etc/letsencrypt/live" -e DOMAIN_PROD="mydomain.com" -e DOMAIN_DEV="mydomain.127.0.0.1.xip.io" -p 8081:8081 -p 8080:8080   oondeo/openresty
 
 http://localhost:8081/verynginx/index.html
 
