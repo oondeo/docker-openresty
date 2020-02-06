@@ -50,6 +50,10 @@ done
 for TLS_DIR in `find $NGINX_SSL_PATH/* -type d`
 do
   CERTNAME=`basename $TLS_DIR`
+  if [[ "$CERTNAME" =~ "-[0-9]*$" ]]
+  then
+    CERTNAME=${CERTNAME::-5}
+  fi
   FILENAME="$NGINX_SSL_TEMP_PATH/$CERTNAME/tls.pem"
   KEYFILE="$NGINX_SSL_TEMP_PATH/$CERTNAME/tls.key"
   #cp -a  $TLS_DIR $NGINX_SSL_TEMP_PATH/

@@ -1,5 +1,0 @@
-#!/bin/dash
-
-mkdir -p /tmp/client_body_temp /tmp/proxy_temp /tmp/fastcgi_temp /tmp/uwsgi_temp
-conf-nginx
-nginx -c /etc/nginx/nginx.conf -g "daemon off;"
